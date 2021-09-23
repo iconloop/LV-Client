@@ -66,7 +66,7 @@ class SampleClient implements Callable<Integer>{
                     throw new Exception(err_msg);
                 }
 
-                if (encrypt==0 && "".equals(plain_text)) {
+                if (encrypt==0 && !"".equals(plain_text)) {
                     err_msg = "Pain Text mode don't support on Decrypt mode. Please use text file option.";
                     out.write(err_msg);
                     throw new Exception(err_msg);
