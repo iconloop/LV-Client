@@ -1,8 +1,9 @@
+from typing import Optional
+
 import requests
 import time
 from assam.jwt import encrypt_jwe, decrypt_jwe_with_cek, encrypt_jwe_with_cek
 from jwcrypto import jwk
-from typing import Optional
 
 from .consts import manager_pubkey
 
@@ -67,7 +68,7 @@ class Manager:
                                 "claimValue": "01012345678",
                                 "salt": "a1341c4b0cbff6bee9118da10d6e85a5"
                             },
-                            "connectionInformation": {
+                            "connectingInformation": {
                                 "claimValue": "E21AEID0W6",
                                 "salt": "b1341c4b0cbff6bee9118da10d6e85a5"
                             },
