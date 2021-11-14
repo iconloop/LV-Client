@@ -1,3 +1,3 @@
 requests
-Assam @ git+ssh://git@github.com/iconloop/Assam.git  # noqa: E501
+Assam @ git+https://git@github.com/iconloop/Assam.git  # noqa: E501
 locust

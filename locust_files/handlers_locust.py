@@ -1,4 +1,5 @@
 import logging
+import subprocess
 from typing import List
 
 from locust_files.interfaces_locust import Manager, Storage
@@ -19,6 +20,16 @@ class Handler:
         self._vid_response = None
         self._token_response = None
         self._store_response = None
+
+        make_clues_param = [
+            'java', '-jar', 'LV-Client.jar', '-t', f'\"secret_for_{phone_number}\"', '-n', '3', '-th', '2', '-p', '1'
+        ]
+
+        call_out = subprocess.run(make_clues_param, stdout=subprocess.PIPE, check=False).stdout
+        call_out = call_out.split(b'\n')
+        self._clues = call_out[:3]
+        self._secret = call_out[3]
+        print(f"clues({self._clues}) secret({self._secret})")
 
     def get_manager(self, endpoint):
         if endpoint in self.managers:
