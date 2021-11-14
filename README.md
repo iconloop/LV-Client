@@ -8,21 +8,21 @@ $ brew install gradle@6
 
 2. **Java Version 1.8**
 
-### Build
+### Build(Optional)
 ~~~
 $ gradle build
+$ cp build/libs/LV-Client.jar ./
 ~~~
 
 ## Test Client Run
 ~~~
-$ cd build/libs
-$ java -jar LV-Client-Sample.jar -m 0
+$ java -jar LV-Client.jar -m 0
 ~~~
 
 ## Command line Run
 ### Make Clues
 ~~~
-$ java -jar build/libs/LV-Client.jar -t "my secret" -n 3 -th 2
+$ java -jar LV-Client.jar -t "my secret" -n 3 -th 2
 $ cat clues.txt
 $ mv clues.txt clues
 ~~~
@@ -60,7 +60,7 @@ OR run testing shell
 
 ### Restore Clues
 ~~~
-$ java -jar build/libs/LV-Client.jar -f restored_clues.txt -e 0
+$ java -jar LV-Client.jar -f restored_clues.txt -e 0
 $ cat decrypt.txt
 ~~~
 
