@@ -1,8 +1,14 @@
+import logging
 import random
-from locust import HttpUser, task, between
+from datetime import datetime
 
-from locust_files.handlers_locust import Handler
+import time
+from locust import HttpUser, task, between, events
+
+from locust_files.handlers_locust import Handler, Failure
 from lvtool.parsers import init_parsers
+
+TEST_TIMEOUT = 500  # millisecond
 
 
 class LiteVaultClient(HttpUser):
@@ -50,9 +56,19 @@ class LiteVaultClient(HttpUser):
 
         :return:
         """
+        start_time = time.time()
+
         self.lv_handler(
             'store',
             self.parser.parse_args(['store', 'clues', '-f', 'tokens.json', '-o', 'store_output.json']))
+
+        total_time = int((time.time() - start_time) * 1000)
+
+        if total_time > TEST_TIMEOUT:
+            events.request_failure.fire(
+                request_type="POST", name="STORE_0", response_time=total_time, response_length=0,
+                exception=Failure('Test timeout')
+            )
 
     @task(3)
     def read(self):
@@ -60,9 +76,20 @@ class LiteVaultClient(HttpUser):
 
         :return:
         """
+        start_time = time.time()
+
         self.lv_handler(
             'read',
-            self.parser.parse_args(['read', '-f', 'store_output.json', '-o', 'restored_clues.txt']))
+            self.parser.parse_args(['read', '-f', 'store_output.json', '-o', 'restored_clues.txt'])
+        )
+
+        total_time = int((time.time() - start_time) * 1000)
+
+        if total_time > TEST_TIMEOUT:
+            events.request_failure.fire(
+                request_type="POST", name="CLUE_0", response_time=total_time, response_length=0,
+                exception=Failure('Test timeout')
+            )
 
     def on_start(self):
         """Prepare files"""
@@ -81,3 +108,8 @@ class LiteVaultClient(HttpUser):
         self.lv_handler(
             'read',
             self.parser.parse_args(['read', '-f', 'store_output.json', '-o', 'restored_clues.txt']))
+
+        logging.info(f"START V-User({self.lv_handler.phone_number}) ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})")
+
+    def on_stop(self):
+        logging.info(f"STOP V-User({self.lv_handler.phone_number}) ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})")

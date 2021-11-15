@@ -1,11 +1,17 @@
 import logging
+import subprocess
 from typing import List
 
+from locust import events
+
 from locust_files.interfaces_locust import Manager, Storage
-from lvtool.helper import read_clue_file
 from lvtool.types import Commands
 
 logging.basicConfig(level=logging.INFO)
+
+
+class Failure(Exception):
+    pass
 
 
 class Handler:
@@ -13,12 +19,22 @@ class Handler:
         self.managers = {}
         self.storages = {}
         self._locust_client = locust_client
-        self._phone_number = phone_number
+        self.phone_number = phone_number
 
         self._vpr_response = None
         self._vid_response = None
         self._token_response = None
         self._store_response = None
+
+        make_clues_param = [
+            'java', '-jar', 'LV-Client.jar', '-t', f'\"secret_for_{phone_number}\"', '-n', '3', '-th', '2', '-p', '1'
+        ]
+
+        call_out = subprocess.run(make_clues_param, stdout=subprocess.PIPE, check=False).stdout
+        call_out = call_out.decode('utf-8').split('\n')
+        self._clues = call_out[:3]
+        self._secret = call_out[3]
+        logging.info(f"V-User({self.phone_number}) clues({self._clues}) secret({self._secret})")
 
     def get_manager(self, endpoint):
         if endpoint in self.managers:
@@ -46,7 +62,7 @@ class Handler:
         vp = None  # TODO: Make VP by VPR from lv-manager.
 
         # TODO: Fill VID Request according to responded VPR!
-        vid_response = manager.issue_vid_request(phone_number=self._phone_number, vp=vp)
+        vid_response = manager.issue_vid_request(phone_number=self.phone_number, vp=vp)
         logging.debug(f"- VID Response: {vid_response}")
 
         self._vid_response = vid_response
@@ -67,10 +83,9 @@ class Handler:
         }
 
     def _handle_store(self, args):
-        clues: List[str] = read_clue_file(args.clues)
         storages: List[dict] = []
 
-        for clue, storage_info in zip(clues, self._vid_response["storages"]):
+        for clue, storage_info in zip(self._clues, self._vid_response["storages"]):
             storage = self.get_storage(storage_info)
             storage.store_request(clue)
             storages.append(storage.to_json())
@@ -89,8 +104,13 @@ class Handler:
             response = storage.clue_request()
             gathered_clues.append(response["clue"])
 
-        # with open(args.output, "w") as f:
-        #     f.writelines("\n".join(gathered_clues))
+        # logging.info(f"gathered_clues({gathered_clues})")
+
+        if self._clues != gathered_clues:
+            events.request_failure.fire(
+                request_type="POST", name="CLUE_0", response_time=0, response_length=0,
+                exception=Failure('The collected clues do not match.')
+            )
 
     def __call__(self, command, args):
         handlers = {
