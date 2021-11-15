@@ -1,4 +1,6 @@
+import logging
 import random
+from datetime import datetime
 
 import time
 from locust import HttpUser, task, between, events
@@ -106,3 +108,8 @@ class LiteVaultClient(HttpUser):
         self.lv_handler(
             'read',
             self.parser.parse_args(['read', '-f', 'store_output.json', '-o', 'restored_clues.txt']))
+
+        logging.info(f"START V-User({self.lv_handler.phone_number}) ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})")
+
+    def on_stop(self):
+        logging.info(f"STOP V-User({self.lv_handler.phone_number}) ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})")

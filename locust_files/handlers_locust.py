@@ -19,7 +19,7 @@ class Handler:
         self.managers = {}
         self.storages = {}
         self._locust_client = locust_client
-        self._phone_number = phone_number
+        self.phone_number = phone_number
 
         self._vpr_response = None
         self._vid_response = None
@@ -34,7 +34,7 @@ class Handler:
         call_out = call_out.decode('utf-8').split('\n')
         self._clues = call_out[:3]
         self._secret = call_out[3]
-        # logging.info(f"clues({self._clues}) secret({self._secret})")
+        logging.info(f"V-User({self.phone_number}) clues({self._clues}) secret({self._secret})")
 
     def get_manager(self, endpoint):
         if endpoint in self.managers:
@@ -62,7 +62,7 @@ class Handler:
         vp = None  # TODO: Make VP by VPR from lv-manager.
 
         # TODO: Fill VID Request according to responded VPR!
-        vid_response = manager.issue_vid_request(phone_number=self._phone_number, vp=vp)
+        vid_response = manager.issue_vid_request(phone_number=self.phone_number, vp=vp)
         logging.debug(f"- VID Response: {vid_response}")
 
         self._vid_response = vid_response
