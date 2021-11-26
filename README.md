@@ -67,8 +67,13 @@ $ cat decrypt.txt
 ## QA
 Using the 'locust' library for integration testing and automated QA.
 
+[local]
 ```
-$ locust -f locust_files/full_scenario.py
+$ locust -f locust_files/local_full_scenario.py
+```
+[testbed]
+```
+$ locust -f locust_files/qabed_full_scenario.py
 ```
 
 Connect to http://localhost:8089/ and test.
