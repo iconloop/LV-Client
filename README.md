@@ -69,11 +69,11 @@ Using the 'locust' library for integration testing and automated QA.
 
 [local]
 ```
-$ locust -f locust_files/local_full_scenario.py
+$ locust -f locust_files/full_scenario_local.py
 ```
 [testbed]
 ```
-$ locust -f locust_files/qabed_full_scenario.py
+$ locust -f locust_files/full_scenario_qabed.py
 ```
 
 Connect to http://localhost:8089/ and test.
