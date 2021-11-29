@@ -55,7 +55,7 @@ OR run testing shell
 ```
 [testbed]
 ```
-./run_QAbed.sh [clue_file_path] 
+./run_testbed.sh [clue_file_path] 
 ```
 
 ### Restore Clues
@@ -73,7 +73,7 @@ $ locust -f locust_files/full_scenario_local.py
 ```
 [testbed]
 ```
-$ locust -f locust_files/full_scenario_qabed.py
+$ locust -f locust_files/full_scenario_testbed.py
 ```
 
 Connect to http://localhost:8089/ and test.
