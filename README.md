@@ -14,10 +14,11 @@ $ gradle build
 $ cp build/libs/LV-Client.jar ./
 ~~~
 
-## Test Client Run
-~~~
-$ java -jar LV-Client.jar -m 0
-~~~
+## ~~Test CLI Client Run~~
+
+~~$ java -jar LV-Client.jar -m 0~~
+
+The Java CLI client is not currently supported.
 
 ## Command line Run
 ### Make Clues
