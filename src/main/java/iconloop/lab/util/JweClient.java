@@ -22,7 +22,7 @@ public class JweClient {
         JsonWebEncryption senderJwe = new JsonWebEncryption();
         senderJwe.setKey(this.serverPubKey);
         senderJwe.setPayload(payload);
-        senderJwe.setAlgorithmHeaderValue(KeyManagementAlgorithmIdentifiers.ECDH_ES_A128KW);
+        senderJwe.setAlgorithmHeaderValue(KeyManagementAlgorithmIdentifiers.ECDH_ES);
         senderJwe.setEncryptionMethodHeaderParameter(ContentEncryptionAlgorithmIdentifiers.AES_128_GCM);
         return senderJwe;
     }
