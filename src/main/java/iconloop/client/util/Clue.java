@@ -14,6 +14,7 @@ public class Clue {
     private static final SecretKey _recoveryKey = new SecretKeySpec(recoveryKey.getBytes(), "AES");;
 
     public String[] makeClue(int N, int T, byte[] data) {
+        T--;
         SecretSharing ss = new SecretSharing(new SecureRandom(), N, T);
         byte[][] clues = ss.split(data);
         String[] out = new String[N];

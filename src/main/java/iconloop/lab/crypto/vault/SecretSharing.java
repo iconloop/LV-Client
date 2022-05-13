@@ -61,9 +61,10 @@ public class SecretSharing {
      * @ return : the original secret
      */
     public byte[] reconstruct(byte[][] shares) {
-
-        if (shares.length < (_t+1))
+//        if (shares.length < (_t+1)) {
+        if (shares.length < (_t)) {
             return null;
+        }
 
         //to be returned
         final byte[] secret = new byte[shares[0].length-1];

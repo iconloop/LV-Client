@@ -108,7 +108,10 @@ class SampleClient implements Callable<Integer>{
                         clues[index++] = clue_str;
                     }
 
-                    reconstructedStr = new String(clue.reconstruct(number, thresh_holder, clues), StandardCharsets.UTF_8);
+                    String[] clues_ = new String[index];
+                    System.arraycopy(clues, 0, clues_, 0, clues_.length);
+
+                    reconstructedStr = new String(clue.reconstruct(number, thresh_holder, clues_), StandardCharsets.UTF_8);
                     out.write(reconstructedStr);
                 }
 
