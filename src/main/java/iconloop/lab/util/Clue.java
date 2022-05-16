@@ -17,6 +17,7 @@ public class Clue {
     }
 
     public String[] makeClue(int storageNumber, int threshold, byte[] data) throws InvalidCipherTextException {
+        threshold--;
         SecretSharing ss = new SecretSharing(new SecureRandom(), storageNumber, threshold);
         byte[][] clues = ss.split(data);
         String[] out = new String[storageNumber];
