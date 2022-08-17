@@ -11,7 +11,7 @@ $ brew install gradle@6
 ### Build(Optional)
 ~~~
 $ gradle build
-$ cp build/libs/LV-Client.jar ./
+$ cp build/libs/LV-Client.jar ./litevaultsdk.jar
 ~~~
 
 ## ~~Test CLI Client Run~~
