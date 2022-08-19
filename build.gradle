@@ -18,6 +18,7 @@ dependencies {
     implementation 'com.googlecode.lanterna:lanterna:3.0.3'
     implementation 'info.picocli:picocli:4.6.1'
     implementation 'org.bitbucket.b_c:jose4j:0.7.12'
+    implementation 'ch.qos.logback:logback-classic:1.1.2'
 
     testImplementation 'junit:junit:4.12'
 }
