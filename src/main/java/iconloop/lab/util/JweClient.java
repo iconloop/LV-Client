@@ -5,6 +5,8 @@ import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 import org.jose4j.lang.JoseException;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URI;
@@ -62,6 +64,36 @@ public class JweClient {
         receiverJwe.setCompactSerialization(httpResponse);
 
         return receiverJwe.getPlaintextString();
+    }
+
+    public static String getHash(String origin) {
+        String digest = "";
+        try{
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(origin.getBytes());
+            byte[] byteData = messageDigest.digest();
+
+            StringBuffer sb = new StringBuffer();
+            for (byte byteDatum : byteData) {
+                sb.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+            }
+            digest = sb.toString();
+        }catch(NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            digest = null;
+        }
+        return digest;
+    }
+
+    public String makeUserParamVP(String userId, String pin) {
+        // This is MalformedUserParam for ETRI-VAULT only
+
+        String userIdHash = getHash(userId);
+        String pinHash = getHash(pin);
+
+        return "{\"@context\":[\"http://vc.zzeung.id/credentials/v1.json\"],\"id\":\"https://www.iconloop.com/vp/qnfdkqkd/123623\",\"type\":[\"PresentationResponse\"],\"fulfilledCriteria\":{\"conditionId\":\"uuid-requisite-0000-1111-2222\",\"verifiableCredential\":\"YXNzZGZhc2Zkc2ZkYXNhZmRzYWtsc2Fkamtsc2FsJ3NhZGxrO3N….\",\"verifiableCredentialParam\":{\"@context\":[\"http://vc.zzeung.id/credentials/v1.json\",\"http://vc.zzeung.id/credentials/mobile_authentication/kor/v1.json\"],\"type\":[\"UserParam\",\"MalformedUserParam\"],\"userParam\":{\"claim\":{\"userId\":{\"claimValue\":\"" +
+                userIdHash + "\",\"salt\":\"d1341c4b0cbff6bee9118da10d6e85a5\"},\"pin\":{\"claimValue\":\"" +
+                pinHash + "\",\"salt\":\"d1341c4b0cbff6bee9118da10d6e85a5\"}},\"proofType\":\"hash\",\"hashAlgorithm\":\"SHA-256\"}}}}";
     }
 
     public JweClient(String serverUri, Key serverPubKey) {
