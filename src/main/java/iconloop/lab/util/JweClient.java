@@ -8,10 +8,16 @@ import org.jose4j.lang.JoseException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.security.Key;
+
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 
 public class JweClient {
@@ -28,14 +34,21 @@ public class JweClient {
     }
 
     private String sendHttpRequest(String message) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(this.serverUri)
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .header("Authorization", message)
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body().replaceAll("\"", "");
+
+        HttpClient client = new DefaultHttpClient();
+        String response_body = "";
+        try{
+            HttpPost post = new HttpPost(this.serverUri);
+            post.setHeader("Authorization", message);
+            ResponseHandler<String> rh = new BasicResponseHandler();
+            response_body = client.execute(post, rh).replaceAll("\"", "");
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            client.getConnectionManager().shutdown();
+        }
+
+        return response_body;
     }
 
     public String sendMessage(String payload) throws JoseException, IOException, InterruptedException {
