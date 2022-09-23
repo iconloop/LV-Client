@@ -14,9 +14,10 @@ class Manager:
         self._key: jwk.JWK = jwk.JWK.from_json(manager_pubkey)
 
     def _send(self, jwe_token):
-        response = requests.post(f"{self._endpoint}/vault", headers={
-            "Authorization": jwe_token
+        response = requests.post(f"{self._endpoint}/vault", json={
+            "jwe_token": jwe_token
         })
+
         return response.text[1:-1]  # remove quotes...
 
     def request_vpr(self) -> dict:
@@ -112,8 +113,8 @@ class Storage:
         self._tag: Optional[str] = storage_info.get("tag")
 
     def _send(self, jwe_token):
-        response = requests.post(f"{self._endpoint}/vault", headers={
-            "Authorization": jwe_token
+        response = requests.post(f"{self._endpoint}/vault", json={
+            "jwe_token": jwe_token
         })
         assert response.status_code == 200
         return response.text[1:-1]  # remove quotes...
