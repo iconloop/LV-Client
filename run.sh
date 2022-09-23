@@ -8,7 +8,7 @@ fi
 
 # ===========================
 lv-tool vpr -e localhost:8487 -o vpr.json
-lv-tool vid -e -e localhost:8487 -f vpr.json -o storages.json
+lv-tool vid -e localhost:8487 -f vpr.json -o storages.json
 lv-tool token -f storages.json -o token_output.json
 if [[ -z $1 ]]; then
   lv-tool read -f token_output.json -o restored_clues.txt

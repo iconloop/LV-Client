@@ -1,25 +1,23 @@
 package iconloop.lab.util;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 import org.jose4j.lang.JoseException;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URI;
 import java.security.Key;
-
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.DefaultHttpClient;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 public class JweClient {
@@ -35,13 +33,17 @@ public class JweClient {
         return senderJwe;
     }
 
-    private String sendHttpRequest(String message) throws IOException, InterruptedException {
+    public String sendHttpRequest(String message) throws IOException, InterruptedException {
 
         HttpClient client = new DefaultHttpClient();
         String response_body = "";
         try{
             HttpPost post = new HttpPost(this.serverUri);
-            post.setHeader("Authorization", message);
+            JSONObject json = new JSONObject();
+            json.put("jwe_token", message);
+            StringEntity params = new StringEntity(json.toString());
+            post.addHeader("content-type", "application/json");
+            post.setEntity(params);
             ResponseHandler<String> rh = new BasicResponseHandler();
             response_body = client.execute(post, rh).replaceAll("\"", "");
         }catch(Exception e){

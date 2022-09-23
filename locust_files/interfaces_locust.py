@@ -13,8 +13,8 @@ class Manager:
         self._locust_client = locust_client
 
     def _send(self, jwe_token, test_name, cek=None):
-        response = self._locust_client.post(f"{self._endpoint}/vault", headers={
-            "Authorization": jwe_token
+        response = self._locust_client.post(f"{self._endpoint}/vault", json={
+            "jwe_token": jwe_token
         }, name=test_name)
 
         response_ = response.text[1:-1]  # remove quotes....
@@ -124,8 +124,8 @@ class Storage:
         self._tag: Optional[str] = storage_info.get("tag")
 
     def _send(self, jwe_token, test_name):
-        response = self._locust_client.post(f"{self._endpoint}/vault", headers={
-            "Authorization": jwe_token
+        response = self._locust_client.post(f"{self._endpoint}/vault", json={
+            "jwe_token": jwe_token
         }, name=test_name)
 
         assert response.status_code == 200
