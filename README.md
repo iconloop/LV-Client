@@ -21,9 +21,17 @@ $ cp build/libs/LV-Client.jar ./litevaultsdk.jar
 The Java CLI client is not currently supported.
 
 ## Command line Run
-### Make Clues
+### Make Clues 
+### with plain text
 ~~~
-$ java -jar LV-Client.jar -t "my secret" -n 3 -th 2
+$ java -jar litevaultsdk.jar -t "my secret" -n 3 -th 2
+$ cat clues.txt
+$ mv clues.txt clues
+~~~
+
+### with file
+~~~
+$ java -jar litevaultsdk.jar -f [FILE PATH] -n 3 -th 2
 $ cat clues.txt
 $ mv clues.txt clues
 ~~~
@@ -61,7 +69,7 @@ OR run testing shell
 
 ### Restore Clues
 ~~~
-$ java -jar LV-Client.jar -f restored_clues.txt -e 0
+$ java -jar litevaultsdk.jar -f restored_clues.txt -e 0
 $ cat decrypt.txt
 ~~~
 
