@@ -116,6 +116,9 @@ class Storage:
         response = requests.post(f"{self._endpoint}/vault", json={
             "jwe_token": jwe_token
         })
+
+        print(f"Storage response: {response}")
+
         assert response.status_code == 200
         return response.text[1:-1]  # remove quotes...
 

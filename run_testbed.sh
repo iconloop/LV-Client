@@ -33,4 +33,4 @@ else
   lv-tool read -f store_output.json -o restored_clues.txt
 fi
 #cat restored_clues.txt
-cmp --silent clues restored_clues.txt && echo 'Restore success.' || echo 'Fail: Clues Are Different!'
+cmp --silent $1 restored_clues.txt && echo 'Restore success.' || echo 'Fail: Clues Are Different!'
