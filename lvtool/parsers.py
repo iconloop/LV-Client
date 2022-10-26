@@ -12,6 +12,7 @@ def init_parsers():
     auth_token(subparsers.add_parser(Commands.TOKEN, help=auth_token.__doc__))
     write_clues(subparsers.add_parser(Commands.STORE, help=write_clues.__doc__))
     read_clues(subparsers.add_parser(Commands.RESTORE, help=read_clues.__doc__))
+    make_vp(subparsers.add_parser(Commands.MAKEVP, help=make_vp.__doc__))
 
     return parser
 
@@ -28,6 +29,7 @@ def vid_request(parser):
     parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
     parser.add_argument("-e", "--endpoint", required=True, help="Endpoint of LV Manager.")
     parser.add_argument("-f", "--input", required=True, help="VPR")
+    parser.add_argument("-v", "--vp", help="VP")
     parser.add_argument("-o",
                         "--output",
                         required=True,
@@ -55,3 +57,10 @@ def read_clues(parser):
     parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
     parser.add_argument("-f", "--input", required=True, help="Storage info with clue vid and tag.")
     parser.add_argument("-o", "--output", required=True, help="Output path of requested clues.")
+
+
+def make_vp(parser):
+    """Make a VP with the given UserID and PIN."""
+    parser.add_argument("-d", "--debug", action='store_true', help="Run lv-tool in debug mode. (More log output)")
+    parser.add_argument("-u", "--userid", required=True, help="User ID for VP")
+    parser.add_argument("-p", "--pin", required=True, help="Pin for VP")

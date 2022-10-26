@@ -1,3 +1,4 @@
+import hashlib
 import json
 import logging
 from typing import List
@@ -37,11 +38,18 @@ class Handler:
             f.write(json.dumps(vpr, indent=4))
 
     def _handle_get_storages(self, args):
+        vp = None  # TODO: Make VP by VPR from lv-manager.
+
+        if args.vp:
+            logging.debug(f"Use User VP({args.vp})")
+            vp = read_input_file(args.vp)
+        else:
+            logging.debug("Use Default VP")
+
         output_path = args.output
 
         manager = self.get_manager(endpoint=args.endpoint)
         logging.debug("- Requesting VID...")
-        vp = None  # TODO: Make VP by VPR from lv-manager.
         vid_response = manager.issue_vid_request(vp)  # TODO: Fill VID Request according to responded VPR!
         logging.debug(f"- VID Response: {vid_response}")
 
@@ -94,6 +102,47 @@ class Handler:
         with open(args.output, "w") as f:
             f.writelines("\n".join(gathered_clues))
 
+    def _handle_make_vp(self, args):
+        logging.debug(f"userid({args.userid}) hashed({hashlib.sha256(args.userid.encode('UTF-8')).hexdigest()})")
+        logging.debug(f"pin({args.pin}) hashed({hashlib.sha256(args.pin.encode('UTF-8')).hexdigest()})")
+
+        userid = hashlib.sha256(args.userid.encode('UTF-8')).hexdigest()
+        pin = hashlib.sha256(args.pin.encode('UTF-8')).hexdigest()
+
+        user_vp = {
+            "@context": ["http://vc.zzeung.id/credentials/v1.json"],
+            "id": "https://www.iconloop.com/vp/qnfdkqkd/123623",
+            "type": ["PresentationResponse"],
+            "fulfilledCriteria": {
+                "conditionId": "uuid-requisite-0000-1111-2222",
+                "verifiableCredential": "YXNzZGZhc2Zkc2ZkYXNhZmRzYWtsc2Fkamtsc2FsJ3NhZGxrO3N….",
+                "verifiableCredentialParam": {
+                    "@context": [
+                        "http://vc.zzeung.id/credentials/v1.json",
+                        "http://vc.zzeung.id/credentials/mobile_authentication/kor/v1.json"
+                    ],
+                    "type": ["UserParam", "MalformedUserParam"],
+                    "userParam": {
+                        "claim": {
+                            "userId": {
+                                "claimValue": userid,
+                                "salt": "d1341c4b0cbff6bee9118da10d6e85a5"
+                            },
+                            "pin": {
+                                "claimValue": pin,
+                                "salt": "d1341c4b0cbff6bee9118da10d6e85a5"
+                            }
+                        },
+                        "proofType": "hash",
+                        "hashAlgorithm": "SHA-256"
+                    }
+                }
+            }
+        }
+
+        with open(f"vp_{args.userid}.json", "w") as f:
+            json.dump(user_vp, f, indent=4)
+
     def __call__(self, command, args):
         handlers = {
             Commands.VPR: self._handle_get_vp,
@@ -101,6 +150,7 @@ class Handler:
             Commands.TOKEN: self._handle_token,
             Commands.STORE: self._handle_store,
             Commands.RESTORE: self._handle_read,
+            Commands.MAKEVP: self._handle_make_vp
         }
 
         if args.debug:

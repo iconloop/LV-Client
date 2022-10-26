@@ -11,10 +11,19 @@ echo ""
 echo "GET VPR from LV-Manager"
 lv-tool vpr -e lv-manager.iconscare.com -o vpr.json
 cat vpr.json
+
 echo "GET Storages from LV-Manager"
-lv-tool vid -e lv-manager.iconscare.com -f vpr.json -o storages.json
+if [ $# -eq  3 ]; then
+  echo "Make VP with user params"
+  lv-tool makevp -u $2 -p $3
+  lv-tool vid -e lv-manager.iconscare.com -f vpr.json -v vp_$2.json -o storages.json
+else
+  echo "Use Default VP"
+  lv-tool vid -e lv-manager.iconscare.com -f vpr.json -o storages.json
+fi
 cat storages.json
 echo ""
+
 echo "GET Tokens from LV-Storages"
 lv-tool token -f storages.json -o tokens.json
 cat tokens.json

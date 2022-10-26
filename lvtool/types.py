@@ -4,3 +4,4 @@ class Commands:
     TOKEN = "token"
     STORE = "store"
     RESTORE = "read"
+    MAKEVP = "makevp"
