@@ -138,7 +138,7 @@ class Storage:
 
         return token_response
 
-    def store_request(self, vid, clue) -> dict:
+    def store_request(self, vid, clue, tag) -> dict:
         assert self._token
         assert self._cek
 
@@ -149,6 +149,10 @@ class Storage:
             "clue": clue,
             "token": self._token
         }
+
+        if tag:
+            payload["tag"] = tag
+
         jwe_token = encrypt_jwe_with_cek(self._cek, payload, kid=self._token)
         tokenized_response = self._send(jwe_token)
         header, store_response = decrypt_jwe_with_cek(tokenized_response, self._cek)

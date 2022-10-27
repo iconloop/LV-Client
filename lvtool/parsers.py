@@ -50,6 +50,7 @@ def write_clues(parser):
     parser.add_argument("clues", help="Clue file to be stored")
     parser.add_argument("-f", "--input", required=True, help="Storage info with token.")
     parser.add_argument("-o", "--output", required=True, help="Stored info output after clues are stored.")
+    parser.add_argument("-t", "--tag", help="Tag for Clues")
 
 
 def read_clues(parser):

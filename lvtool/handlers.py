@@ -80,7 +80,7 @@ class Handler:
 
         for clue, storage_info in zip(clues, vid_response_msg["storages"]):
             storage = self.get_storage(storage_info)
-            storage.store_request(vid_response_msg["vID"], clue)
+            storage.store_request(vid_response_msg["vID"], clue, args.tag)
             storages.append(storage.to_json())
 
         with open(args.output, "w") as f:
